@@ -24,6 +24,7 @@ public class Person {
     private String email;
     private String mot_de_passe;
     private String role;
+    private String image_path;
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Hebergement> hebergements;

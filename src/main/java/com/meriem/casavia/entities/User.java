@@ -8,7 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +31,26 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Avis> avisList;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Reservation> reservations;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Like> likes = new HashSet<>();
+    @Override
+    public String toString() {
+        return "User{" +
+                "user_id=" + user_id +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", tlf='" + tlf + '\'' +
+                ", pays='" + pays + '\'' +
+                ", email='" + email + '\'' +
+
+                ", image_path='" + image_path + '\'' +
+                '}';
+    }
+
 
 
 

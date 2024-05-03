@@ -2,6 +2,7 @@ package com.meriem.casavia.rsetcontrollers;
 
 import com.meriem.casavia.entities.Person;
 
+import com.meriem.casavia.entities.User;
 import com.meriem.casavia.repositories.PersonRepository;
 import com.meriem.casavia.services.PersonService;
 import io.jsonwebtoken.Jwts;
@@ -77,4 +78,5 @@ public class PersonRestController {
 
         }
     }
+
 }

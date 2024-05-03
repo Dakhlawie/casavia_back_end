@@ -2,7 +2,9 @@ package com.meriem.casavia.rsetcontrollers;
 
 import com.meriem.casavia.entities.Chambre;
 import com.meriem.casavia.entities.Image;
+import com.meriem.casavia.entities.Person;
 import com.meriem.casavia.entities.User;
+import com.meriem.casavia.repositories.PersonRepository;
 import com.meriem.casavia.services.ChambreService;
 import com.meriem.casavia.services.ImageService;
 import com.meriem.casavia.services.UserService;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -27,6 +30,8 @@ public class ImageRestController {
     UserService userService;
     @Autowired
     ChambreService chambreserv;
+    @Autowired
+    PersonRepository personRep;
 
     @PostMapping( "/upload" )
     public Image uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
@@ -77,15 +82,40 @@ public class ImageRestController {
         userService.ajouterUser(u);
 
     }
-    @RequestMapping(value = "/loadfromFS/{id}" ,
+    @RequestMapping(value = "/uploadFSPerson/{id}" , method = RequestMethod.POST)
+    public void uploadImageFSPerson(@RequestParam("image") MultipartFile
+                                      file,@PathVariable("id") Long id) throws IOException {
+        Person u = personRep.findById(id).get();
+        u.setImage_path(id+".jpg");
+
+        Files.write(Paths.get(System.getProperty("user.home")+"/partner/"+u.getImage_path())
+                , file.getBytes());
+        personRep.save(u);
+
+    }
+    @RequestMapping(value = "/loadfromFSPerson/{id}" ,
             method = RequestMethod.GET,
             produces = org.springframework.http.MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getImageFS(@PathVariable("id") Long id) throws IOException {
+    public byte[] getImageFSPerson(@PathVariable("id") Long id) throws IOException {
 
-        User user = userService.getUser(id);
+        Person u = personRep.findById(id).get();
         return
-                Files.readAllBytes(Paths.get(System.getProperty("user.home")+"/images/"+user.getImage_path()));
+                Files.readAllBytes(Paths.get(System.getProperty("user.home")+"/partner/"+u.getImage_path()));
     }
+    @RequestMapping(value = "/loadfromFS/{id}", method = RequestMethod.GET, produces = org.springframework.http.MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImageFS(@PathVariable("id") Long id) throws IOException {
+        User user = userService.getUser(id);
+        Path imagePath = Paths.get(System.getProperty("user.home") + "/images/" + user.getImage_path());
+        if (Files.exists(imagePath)) {
+            return Files.readAllBytes(imagePath);
+        } else {
+            // Utilisez le chemin absolu vers l'image par défaut
+            Path defaultImagePath = Paths.get(System.getProperty("user.home") + "/images/admin.png");
+            return Files.readAllBytes(defaultImagePath);
+        }
+    }
+
+
     @RequestMapping(value = "/uploadFSChambre/{id}" , method = RequestMethod.POST)
     public void uploadImageFSChambre(@RequestParam("image") MultipartFile
                                       file,@PathVariable("id") Long id) throws IOException {

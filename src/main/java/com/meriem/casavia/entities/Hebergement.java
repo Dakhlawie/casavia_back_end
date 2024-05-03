@@ -1,5 +1,6 @@
 package com.meriem.casavia.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -8,7 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +23,8 @@ public class Hebergement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hebergement_id;
     private String nom;
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     private String ville;
     private String pays;
@@ -38,6 +43,9 @@ public class Hebergement {
     private String facebook;
     private String instagram;
     private String fax;
+    private String country_code;
+    private String currency;
+
 
     @ManyToOne
     private Categorie categorie;
@@ -48,6 +56,7 @@ public class Hebergement {
     @JoinTable(name = "hebergement_equipement",
             joinColumns = @JoinColumn(name = "hebergement_id"),
             inverseJoinColumns = @JoinColumn(name = "equipement_id"))
+    @JsonIgnore
     private List<Equipement> equipements;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "hebergement_language",
@@ -68,6 +77,19 @@ public class Hebergement {
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
 
     private List<Position> positions;
+    @OneToMany(mappedBy = "hebergement",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Reservation> reservations;
+    @OneToMany(mappedBy = "hebergement",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Dates> reservationDates;
+    @OneToMany(mappedBy = "hebergement",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Like> likes = new HashSet<>();
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "video_id", referencedColumnName = "video_id")
+    private Video video;
     @Override
     public String toString() {
         return "Hebergement{" +

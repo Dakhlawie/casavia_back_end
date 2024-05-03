@@ -20,10 +20,12 @@ public class Chambre {
     private Long chambre_id;
 
     private String type;
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     private double prix;
     private String image_path;
-
+    private long nbRoom;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "chambre_equipement",
@@ -34,6 +36,9 @@ public class Chambre {
     @JsonIgnore
     @ManyToOne
     private Hebergement hebergement;
+    @OneToMany(mappedBy = "chambre",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Dates> reservationDates;
 
 
 
