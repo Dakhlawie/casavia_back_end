@@ -41,6 +41,9 @@ public class HebergementServiceImpl implements HebergementService{
         h.setFax(hebergement.getFax());
         h.setEquipements(hebergement.getEquipements());
         h.setLanguages(hebergement.getLanguages());
+        h.setCountry_code(hebergement.getCountry_code());
+        h.setCurrency(hebergement.getCurrency());
+        h.setCancellationfees(hebergement.getCancellationfees());
 
 
 

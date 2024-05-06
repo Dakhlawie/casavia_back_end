@@ -19,6 +19,8 @@ public interface HebergementRepository extends JpaRepository<Hebergement,Long> {
     List<Hebergement> findByVilleAndCategorie(String ville,Categorie c);
     @Query("SELECT h.categorie FROM Hebergement h WHERE h.hebergement_id = :id")
     Categorie findCategorieByHebergementId(@Param("id") Long id);
+    @Query("SELECT h FROM Hebergement h WHERE h.ville LIKE %:query% OR h.pays LIKE %:query% AND h.categorie = :categorie")
+    List<Hebergement> findByVilleOrPaysAndCategorie(@Param("query") String query, @Param("categorie") Categorie categorie);
 
 
 

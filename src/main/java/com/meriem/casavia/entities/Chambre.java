@@ -25,7 +25,7 @@ public class Chambre {
     private String description;
     private double prix;
     private String image_path;
-    private long nbRoom;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "chambre_equipement",
@@ -33,6 +33,7 @@ public class Chambre {
             inverseJoinColumns = @JoinColumn(name = "equipement_id")
     )
     private List<Equipement> equipements;
+    private long nbRoom;
     @JsonIgnore
     @ManyToOne
     private Hebergement hebergement;

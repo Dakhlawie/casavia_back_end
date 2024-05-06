@@ -51,6 +51,8 @@ public class HebergementRestController {
 
     @PutMapping("/update/{id}")
     public Hebergement updateHebergement(@PathVariable Long id ,@RequestBody Hebergement hebergement) {
+        System.out.println("***************");
+        System.out.println(id+""+hebergement.getCountry_code());
         return hebergementService.updateHebergement(id,hebergement);
     }
 
@@ -92,7 +94,7 @@ public class HebergementRestController {
     @GetMapping("/findByCategorieVille")
     public List<Hebergement> searchHebergements(@RequestParam String ville, @RequestParam long id) {
        Categorie  categorie=this.categorieRep.findById(id).get();
-        return hebergementRep.findByVilleAndCategorie(ville,categorie);
+        return hebergementRep.findByVilleOrPaysAndCategorie(ville,categorie);
     }
     @PutMapping("/video")
     public Hebergement ajouterVideo(@RequestParam("video_id") long video_id, @RequestParam("hebergement_id") long hebergement_id){

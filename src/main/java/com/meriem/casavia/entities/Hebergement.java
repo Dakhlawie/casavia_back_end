@@ -45,6 +45,7 @@ public class Hebergement {
     private String fax;
     private String country_code;
     private String currency;
+    private String cancellationfees;
 
 
     @ManyToOne
@@ -77,6 +78,7 @@ public class Hebergement {
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
 
     private List<Position> positions;
+
     @OneToMany(mappedBy = "hebergement",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Reservation> reservations;
