@@ -20,6 +20,10 @@ public class Categorie {
     private Long idCat;
 
     private String type;
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+    private String icon;
     @JsonIgnore
     @OneToMany(mappedBy = "categorie")
 

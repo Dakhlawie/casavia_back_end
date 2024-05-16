@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-
 @Entity
-public class roomType {
+public class Reponse {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String type;
-    @Lob
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    @OneToOne
+    @JoinColumn(name = "question_id", nullable = false)
+    private Question question;
+
+    private String content;
 }

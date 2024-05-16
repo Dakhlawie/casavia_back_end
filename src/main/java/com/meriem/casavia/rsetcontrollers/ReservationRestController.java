@@ -2,6 +2,7 @@ package com.meriem.casavia.rsetcontrollers;
 
 import com.meriem.casavia.entities.*;
 import com.meriem.casavia.repositories.HebergementRepository;
+import com.meriem.casavia.repositories.PersonRepository;
 import com.meriem.casavia.repositories.ReservationRepository;
 import com.meriem.casavia.repositories.UserRepository;
 import com.meriem.casavia.services.ReservationService;
@@ -23,6 +24,8 @@ public class ReservationRestController {
     HebergementRepository hebergementRep;
     @Autowired
     UserRepository userRep;
+    @Autowired
+    PersonRepository personRep;
     @PostMapping("/save")
     public Reservation ajouterReservation(@RequestBody Reservation reservation,@RequestParam long user,@RequestParam long hebergement){
         reservation.setEtat("En attente");
@@ -68,5 +71,34 @@ public class ReservationRestController {
     @GetMapping("/getById/{id}")
     public Reservation getById(@PathVariable("id") long id){
         return ReservationRep.findById(id).get();
+    }
+    @GetMapping("/monthly-count")
+    public List<Object[]> getMonthlyReservationCounts() {
+        return ReservationRep.countReservationsByMonth();
+    }
+    @GetMapping("/hebergement/{id}")
+    public List<Object[]> getMonthlyReservationCountsByHebergement(@PathVariable("id") long id) {
+
+        Hebergement h=hebergementRep.findById(id).get();
+        return ReservationRep.countReservationsByMonthAndHebergement(h);
+    }
+    @GetMapping("/person/reservations/{id}")
+    public List<Object[]> getMonthlyReservationCountsByPerson(@PathVariable("id") long id) {
+
+        Person p=personRep.findById(id).get();
+        return ReservationRep.countMonthlyReservationsByPerson(p.getPerson_id());
+    }
+
+    @GetMapping("/number")
+    public long getTotalReservation() {
+        return ReservationRep.countBy();
+    }
+    @GetMapping("/person/years/{id}")
+    public List<Object[]> getYearlyReservationByPerson(@PathVariable("id") long id){
+        return this.ReservationRep.countYearlyReservationsByPerson(id);
+    }
+    @GetMapping("/years")
+    public List<Object[]> getYearlyReservation(){
+        return this.ReservationRep.countReservationsByYearForLastFiveYears();
     }
 }

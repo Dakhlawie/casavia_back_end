@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,4 +34,11 @@ public class Reservation {
 
     private String etat;
     private String nbRooms;
+    @ManyToMany
+    @JoinTable(
+            name = "reservation_chambre",
+            joinColumns = @JoinColumn(name = "reservation_id"),
+            inverseJoinColumns = @JoinColumn(name = "chambre_id")
+    )
+    private List<Chambre> chambres;
 }

@@ -1,18 +1,29 @@
 package com.meriem.casavia.services;
 
-import com.meriem.casavia.entities.Categorie;
-import com.meriem.casavia.entities.Hebergement;
+import com.meriem.casavia.entities.*;
 import com.meriem.casavia.repositories.HebergementRepository;
+import com.meriem.casavia.repositories.LikeRepository;
+import com.meriem.casavia.repositories.RecommandationRepository;
+import com.meriem.casavia.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HebergementServiceImpl implements HebergementService{
 
     @Autowired
     private HebergementRepository hebergementRepository;
+    @Autowired
+    private LikeRepository likeRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private RecommandationRepository recommandationRepository;
+
 
     @Override
     public Hebergement createHebergement(Hebergement hebergement) {
@@ -91,5 +102,26 @@ public class HebergementServiceImpl implements HebergementService{
     @Override
     public Hebergement getHebergementById(Long id) {
         return hebergementRepository.findById(id).get();
+    }
+    @Override
+    public List<Hebergement> findHebergementsLikedByUser(User user) {
+        List<Like> likes = likeRepository.findByUser(user);
+        return likes.stream().map(Like::getHebergement).collect(Collectors.toList());
+    }
+@Override
+    public List<Hebergement> findHebergementsReservedByUser(User user) {
+        List<Reservation> reservations = reservationRepository.findByUser(user);
+        return reservations.stream()
+                .map(Reservation::getHebergement)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+    public Hebergement getHebergementFromRecommandation(Long recommandationId) {
+        Optional<Recommandation> recommandation = recommandationRepository.findById(recommandationId);
+        if (recommandation.isPresent()) {
+            return recommandation.get().getHebergement();
+        } else {
+            throw new RuntimeException("Recommandation not found with id " + recommandationId);
+        }
     }
 }

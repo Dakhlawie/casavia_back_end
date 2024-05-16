@@ -33,7 +33,7 @@ public class ContactRestController {
     }
     @PostMapping("/confirmation")
     public void sendEmail(@RequestParam String email, @RequestParam String name){
-        System.out.println("hello");
+
         MimeMessage message = mailSender.createMimeMessage();
         String htmlBody ="<!DOCTYPE html>" +
                 "<html>" +
@@ -81,4 +81,54 @@ public class ContactRestController {
         }
 
     }
+    @PostMapping("/contactByEmail")
+    public void sendEmailcontact(@RequestParam String subject,@RequestParam String corps, @RequestParam String emailsender,@RequestParam String emailrecepteur){
+        System.out.println(emailsender);
+        MimeMessage message = mailSender.createMimeMessage();
+
+        String htmlBody ="<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<style>" +
+                "body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #ffffff; text-align: center;}" +
+                ".header img { width: 20%; max-width: 200px; margin: 20px auto; margin: 0 auto; display: block; }" +
+                ".container {  margin: 0 auto;width: 600px; border: 1px solid #ccc; padding: 20px; background-color: #f9f9f9;box-sizing: border-box; }" +
+                ".footer { text-align: left; /* Align footer text to the left */\n" +
+                "            width: 600px;\n" +
+                "            margin: 20px auto; /* Aligns the footer at the same level as the container */\n" +
+                "            padding: 0 20px; }" +
+                ".button { background-color: #0b2370; color: white; padding: 10px 20px; text-decoration: none; border: none; border-radius: 3px; cursor: pointer; }" +
+                "h2 { color: #0b2370; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<div class='header'>" +
+                "<img src='https://drive.google.com/uc?export=view&id=1fok6tD7IdiNQ2C1IROCrs4Lu3ptIggKy' alt='CASAVIA Logo'>" +
+                "</div>" +
+                "<div class='container'>" +
+                "<h2>Hello ,</h2>" +
+                "<p>"+corps+"</p>" +
+
+                "</div>" +
+                "<div class='footer'>" +
+                "<p>Best regards</p>" +
+                "<p>The Casavia Team</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setFrom(emailsender);
+            helper.setTo(emailrecepteur);
+            helper.setSubject(subject);
+            helper.setText(htmlBody, true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

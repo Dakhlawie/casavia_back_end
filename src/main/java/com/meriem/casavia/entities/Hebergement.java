@@ -11,6 +11,7 @@ import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -90,8 +91,18 @@ public class Hebergement {
     private Set<Like> likes = new HashSet<>();
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
+
     @JoinColumn(name = "video_id", referencedColumnName = "video_id")
     private Video video;
+    @JsonIgnore
+    @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Recommandation> recommandations;
+    @JsonIgnore
+    @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OffreHebergement> offres;
+    @JsonIgnore
+    @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions;
     @Override
     public String toString() {
         return "Hebergement{" +
@@ -115,6 +126,18 @@ public class Hebergement {
                 ", instagram='" + instagram + '\'' +
                 ", fax='" + fax + '\'' +
                 '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hebergement that = (Hebergement) o;
+        return Objects.equals(hebergement_id, that.hebergement_id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hebergement_id);
     }
 
 }

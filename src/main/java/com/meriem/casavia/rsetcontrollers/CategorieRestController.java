@@ -31,12 +31,26 @@ public class CategorieRestController {
         return  this.categorieRep.save(c);
     }
     @PutMapping("/update")
-    public Categorie updateCategorie(@RequestBody  Categorie c){
-        return  this.categorieRep.save(c);
+    public Categorie updateCategorie(@RequestBody  Categorie c,@RequestParam long id){
+        Categorie c1=categorieRep.findById(id).get();
+        c1.setType(c.getType());
+        c1.setDescription(c.getDescription());
+
+        return categorieRep.save(c1);
+
     }
     @DeleteMapping("/delete/{id}")
     public void DeleteCategorie(@PathVariable("id") long id){
         this.categorieRep.deleteById(id);
+    }
+    @GetMapping("/{id}")
+    public Categorie getCategoryById(@PathVariable("id") long id){
+        return this.categorieRep.findById(id).get();
+    }
+    @GetMapping("/by-hebergement/{hebergementId}")
+    public Categorie getCategorieByHebergement(@PathVariable Long hebergementId) {
+        System.out.println(hebergementId);
+        return categorieRep.findCategorieByHebergementId(hebergementId);
     }
 
 }

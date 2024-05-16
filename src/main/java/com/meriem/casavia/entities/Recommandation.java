@@ -4,32 +4,23 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-
 @Entity
-public class Avis {
+public class Recommandation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long avisId;
-    private String avis;
-    private String avisNegative;
-    private int staff;
-    private int location;
-    private int comfort;
-    private int facilities;
-    private int cleanliness;
-    private LocalDate date;
+    private long recommandation_id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "hebergement_id")
     private Hebergement hebergement;
 }
-

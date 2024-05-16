@@ -10,6 +10,6 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<Like,Long> {
 List<Like> findByUser(User user);
 Like findByUserAndHebergement(User user, Hebergement h);
-    void deleteByUserAndHebergement(User user, Hebergement hebergement);
+void deleteByUserAndHebergement(User user, Hebergement hebergement);
 
 }

@@ -28,6 +28,9 @@ public class ChambreServiceImpl implements ChambreService{
         ch.setPrix(c.getPrix());
         ch.setEquipements(c.getEquipements());
         ch.setNbRoom(c.getNbRoom());
+        ch.setBed(c.getBed());
+        ch.setFloor(c.getFloor());
+        ch.setView(c.getView());
         return chambreRep.save(ch);
 
     }

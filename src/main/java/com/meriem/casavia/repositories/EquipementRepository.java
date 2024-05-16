@@ -16,5 +16,6 @@ public interface EquipementRepository extends JpaRepository<Equipement,Long> {
          "WHERE e.categorie.id = :categorieId " +
          "AND :hebergementId IN (SELECT h.id FROM e.hebergements h)")
  List<Equipement> findByCategorieIdAndHebergementId(@Param("categorieId") Long categorieId, @Param("hebergementId") Long hebergementId);
-
+ @Query("SELECT e FROM Equipement e WHERE e.categorie.nom = :name")
+ List<Equipement> findByCategorieName(@Param("name") String name);
 }

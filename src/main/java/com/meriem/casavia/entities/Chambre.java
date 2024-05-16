@@ -20,6 +20,10 @@ public class Chambre {
     private Long chambre_id;
 
     private String type;
+
+    private String floor;
+    private String view;
+    private String bed;
     @Lob
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -40,7 +44,21 @@ public class Chambre {
     @OneToMany(mappedBy = "chambre",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Dates> reservationDates;
+    @ManyToMany(mappedBy = "chambres")
+    private List<Reservation> reservations;
 
+    @Override
+    public String toString() {
+        return "Chambre{" +
+                "chambre_id=" + chambre_id +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", prix=" + prix +
+                ", image_path='" + image_path + '\'' +
+                ", equipements=" + equipements +
+                ", nbRoom=" + nbRoom +
+                '}';
+    }
 
 
 

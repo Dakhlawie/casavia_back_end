@@ -22,6 +22,10 @@ public class CategorieEquipement {
     private Long categorie_id;
 
     private String nom;
+    private String icon;
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 
     @OneToMany(mappedBy = "categorie", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

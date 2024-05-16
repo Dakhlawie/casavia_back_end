@@ -17,6 +17,7 @@ public class Historique {
     private String check_in;
     private String check_out;
     private String lieu;
+    private String etat="active";
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

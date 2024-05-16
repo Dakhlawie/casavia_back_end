@@ -1,6 +1,7 @@
 package com.meriem.casavia.rsetcontrollers;
 
 import com.meriem.casavia.entities.Chambre;
+import com.meriem.casavia.entities.Equipement;
 import com.meriem.casavia.entities.Hebergement;
 import com.meriem.casavia.repositories.ChambreRepository;
 import com.meriem.casavia.repositories.HebergementRepository;
@@ -38,5 +39,23 @@ public List<Chambre> getByHebergement(@RequestParam long hebergement){
     Hebergement h=hebergementRep.findById(hebergement).get();
     return chambreRep.findByHebergement(h);
    }
+    @GetMapping("/equipements/{id}")
+    public List<Equipement> getEquipements(@PathVariable("id") long id){
+        Chambre h=chambreRep.findById(id).get();
+        List<Equipement> equipements=h.getEquipements();
+        return equipements;
+    }
+    @GetMapping("/hasEquipements/{id}")
+    public boolean hasEquipements(@PathVariable("id")long id){
+        Chambre h=chambreRep.findById(id).get();
+
+        if(h.getEquipements().isEmpty()){
+            return false;
+        }else{return true;}
+    }
+    @GetMapping("/{id}")
+    public Chambre getById(@PathVariable("id")long id){
+        return this.chambreRep.findById(id).get();
+    }
 
 }

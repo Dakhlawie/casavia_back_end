@@ -1,15 +1,9 @@
 package com.meriem.casavia.rsetcontrollers;
 
-import com.meriem.casavia.entities.Categorie;
-import com.meriem.casavia.entities.Equipement;
-import com.meriem.casavia.entities.Hebergement;
+import com.meriem.casavia.entities.*;
 
-import com.meriem.casavia.entities.Video;
-import com.meriem.casavia.repositories.CategorieRepository;
+import com.meriem.casavia.repositories.*;
 
-import com.meriem.casavia.repositories.HebergementRepository;
-import com.meriem.casavia.repositories.PersonRepository;
-import com.meriem.casavia.repositories.VideoRepository;
 import com.meriem.casavia.services.HebergementService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RequestMapping("/hebergement")
 @RestController
@@ -32,6 +27,10 @@ public class HebergementRestController {
     HebergementRepository hebergementRep;
     @Autowired
     VideoRepository videoRep;
+    @Autowired
+    UserRepository userRep;
+
+
     @GetMapping("/all")
     public List<Hebergement> getAllHebergements() {
         return hebergementService.getAllHebergements();
@@ -39,8 +38,7 @@ public class HebergementRestController {
 
     @PostMapping("/save")
     public Hebergement createHebergement(@RequestParam Long categorie,@RequestParam Long person,@RequestBody Hebergement hebergement) {
-        System.out.println(categorie);
-        System.out.println(person);
+
 
         hebergement.setCategorie(categorieRep.findById(categorie).get());
         hebergement.setPerson(personRep.findById(person).get());
@@ -51,16 +49,17 @@ public class HebergementRestController {
 
     @PutMapping("/update/{id}")
     public Hebergement updateHebergement(@PathVariable Long id ,@RequestBody Hebergement hebergement) {
-        System.out.println("***************");
-        System.out.println(id+""+hebergement.getCountry_code());
+
         return hebergementService.updateHebergement(id,hebergement);
     }
 
     @DeleteMapping("/delete/{id}")
     public void deleteHebergement(@PathVariable("id") Long id) {
         Hebergement h =hebergementRep.findById(id).get();
+
         List<Equipement> equipements = h.getEquipements();
         equipements.clear();
+        h.getChambres().forEach(room -> room.getEquipements().clear());
 
 
         hebergementRep.save(h);
@@ -98,8 +97,7 @@ public class HebergementRestController {
     }
     @PutMapping("/video")
     public Hebergement ajouterVideo(@RequestParam("video_id") long video_id, @RequestParam("hebergement_id") long hebergement_id){
-        System.out.println(hebergement_id);
-        System.out.println(video_id);
+   ;
 
         Video v=videoRep.findById(video_id).get();
         Hebergement h=hebergementRep.findById(hebergement_id).get();
@@ -122,6 +120,51 @@ public class HebergementRestController {
     @GetMapping("/getcategorie")
     public Categorie getCategorie(@RequestParam long id){
         return this.hebergementRep.findCategorieByHebergementId(id);
+    }
+    @GetMapping("/liked-hebergements")
+    public List<Hebergement> getLikedHebergements(@RequestParam Long userId) {
+        User u=userRep.findById(userId).get();
+        return hebergementService.findHebergementsLikedByUser(u);
+    }
+
+    @GetMapping("/reserved-hebergements")
+    public List<Hebergement> getReservedHebergements(@RequestParam Long userId) {
+        User u=userRep.findById(userId).get();
+        return hebergementService.findHebergementsReservedByUser(u);
+    }
+    @GetMapping("/number")
+    public long getTotalhebergements() {
+        return hebergementRep.countBy();
+    }
+    @GetMapping("/{hebergementId}/categories")
+    public List<CategorieEquipement> getCategoriesOfEquipementsByHebergementId(@PathVariable Long hebergementId) {
+        return hebergementRep.findCategoriesOfEquipementsByHebergementId(hebergementId);
+    }
+    @GetMapping("/{hebergementId}/languages")
+    public List<language> getLanguagesByHebergementId(@PathVariable Long hebergementId) {
+        return hebergementRep.findLanguagesByHebergementId(hebergementId);
+    }
+    @GetMapping("/from-recommandation/{recommandationId}")
+    public Hebergement getHebergementFromRecommandation(@PathVariable Long recommandationId) {
+        return hebergementService.getHebergementFromRecommandation(recommandationId);
+    }
+    @GetMapping("/hasImages/{id}")
+    public boolean hasImages(@PathVariable("id")long id){
+        return this.hebergementRep.hasImages(id);
+    }
+    @GetMapping("/hasEquipements/{id}")
+    public boolean hasEquipements(@PathVariable("id")long id){
+        return this.hebergementRep.hasEquipments(id);
+    }
+    @GetMapping("/hasLocation/{id}")
+    public boolean hasLocation(@PathVariable("id")long id){
+        return this.hebergementRep.hasLocation(id);
+
+    }
+    @GetMapping("/hasRooms/{id}")
+    public boolean hasRooms(@PathVariable("id")long id){
+        return this.hebergementRep.hasRooms(id);
+
     }
 
 

@@ -187,4 +187,8 @@ public User ajouterUser(@RequestBody User user){
         }
         return null;
     }
+    @GetMapping("/number")
+    public long getTotalUsers() {
+        return userRepository.countBy();
+    }
 }

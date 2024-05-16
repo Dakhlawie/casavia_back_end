@@ -2,6 +2,7 @@ package com.meriem.casavia.services;
 
 import com.meriem.casavia.entities.Categorie;
 import com.meriem.casavia.entities.Hebergement;
+import com.meriem.casavia.entities.User;
 
 import java.util.List;
 
@@ -17,5 +18,8 @@ public interface HebergementService {
     Hebergement getHebergementByNom(String nom);
     Long gethebergement_idByNom(String nom);
     Hebergement getHebergementById(Long id);
+    List<Hebergement> findHebergementsLikedByUser(User user);
+    List<Hebergement> findHebergementsReservedByUser(User user);
+    Hebergement getHebergementFromRecommandation(Long recommandationId);
 
 }

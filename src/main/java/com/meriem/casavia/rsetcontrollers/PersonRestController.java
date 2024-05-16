@@ -78,5 +78,16 @@ public class PersonRestController {
 
         }
     }
-
+    @GetMapping("/number")
+    public long getTotalPartenaires() {
+        return personRep.countBy()-1;
+    }
+    @GetMapping("/getByHeber")
+    public Person findByHeber(@RequestParam long hebergement){
+        return personRep.findByHebergementId(hebergement);
+    }
+@GetMapping("/statistic/{id}")
+    public Object getStatistic(@PathVariable("id") long id){
+        return this.personRep.getPersonStatistics(id);
+}
 }

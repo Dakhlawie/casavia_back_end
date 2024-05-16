@@ -25,9 +25,9 @@ public class HistoriqueRestController {
         return historiqueRep.save(historique);
     }
     @GetMapping("/getByUser")
-    public List<Historique> getHistoriqueByUser(@RequestParam long user){
+    public List<Historique> getHistoriqueByUser(@RequestParam long user,@RequestParam String etat){
         User u=userRep.findById(user).get();
-        return historiqueRep.getByUser(u);
+        return historiqueRep.getByUserAndEtat(u,etat);
 
     }
     @Transactional

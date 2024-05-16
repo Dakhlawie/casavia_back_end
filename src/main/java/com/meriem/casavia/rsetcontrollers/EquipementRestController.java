@@ -1,10 +1,8 @@
 package com.meriem.casavia.rsetcontrollers;
 
-import com.meriem.casavia.entities.Categorie;
-import com.meriem.casavia.entities.CategorieEquipement;
-import com.meriem.casavia.entities.Equipement;
-import com.meriem.casavia.entities.Hebergement;
+import com.meriem.casavia.entities.*;
 import com.meriem.casavia.repositories.CategoryEquipementRepository;
+import com.meriem.casavia.repositories.ChambreRepository;
 import com.meriem.casavia.repositories.EquipementRepository;
 import com.meriem.casavia.repositories.HebergementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,8 @@ public class EquipementRestController {
     EquipementRepository equipementRep;
     @Autowired
     HebergementRepository hebergementRep;
+    @Autowired
+    ChambreRepository chambreRepository;
     @Autowired
     CategoryEquipementRepository categorieRep;
     @GetMapping("/all")
@@ -40,8 +40,11 @@ public class EquipementRestController {
         return  this.equipementRep.save(e);
     }
     @PutMapping("/update")
-    public Equipement updateEquipement(@RequestBody  Equipement e){
-        return  this.equipementRep.save(e);
+    public Equipement updateEquipement(@RequestBody  Equipement e,@RequestParam long id){
+        Equipement c=equipementRep.findById(id).get();
+        c.setCategorie(e.getCategorie());
+        c.setNom(e.getNom());
+        return  this.equipementRep.save(c);
     }
     @DeleteMapping("/delete/{id}")
     public void DeleteEquipement(@PathVariable("id") long id){
@@ -61,6 +64,20 @@ public class EquipementRestController {
 
         return equipement;
     }
+    @PostMapping("/save/room/{id}")
+    public Equipement addEquipementToRoom(@PathVariable("id") long id, @RequestParam long equipementId) {
+        Chambre c = chambreRepository.findById(id).get();
+        Equipement equipement = equipementRep.findById(equipementId).get();
+
+        List<Equipement> equipements = c.getEquipements();
+        equipements.add(equipement);
+        c.setEquipements(equipements);
+
+
+        chambreRepository.save(c);
+
+        return equipement;
+    }
     @PostMapping("/remove/hebergement")
     public void removeEquipementFromHebergement(@RequestParam long hebergementId, @RequestParam long equipementId) {
         Hebergement hebergement = hebergementRep.findById(hebergementId).get();
@@ -72,9 +89,24 @@ public class EquipementRestController {
 
         hebergementRep.save(hebergement);
     }
+    @PostMapping("/remove/room/{id}")
+    public void removeEquipementFromRoom(@PathVariable("id") long id, @RequestParam long equipementId) {
+        Chambre c = chambreRepository.findById(id).get();
+        Equipement equipement = equipementRep.findById(equipementId).get();
+
+        List<Equipement> equipements = c.getEquipements();
+        equipements.remove(equipement);
+        c.setEquipements(equipements);
+
+        chambreRepository.save(c);
+    }
     @GetMapping("/findByCategorieHebregement")
     public List<Equipement> getByCategorieHbergement(@RequestParam long categorie,@RequestParam long hebergement){
         return equipementRep.findByCategorieIdAndHebergementId(categorie,hebergement);
+    }
+    @GetMapping("/{id}")
+    public Equipement getEquipementById(@PathVariable("id") long id){
+        return this.equipementRep.findById(id).get();
     }
 
 

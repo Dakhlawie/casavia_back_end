@@ -4,32 +4,32 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-
 @Entity
-public class Avis {
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long avisId;
-    private String avis;
-    private String avisNegative;
-    private int staff;
-    private int location;
-    private int comfort;
-    private int facilities;
-    private int cleanliness;
-    private LocalDate date;
+    private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "hebergement_id", nullable = false)
     private Hebergement hebergement;
-}
 
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
+    private Reponse reponse;
+
+
+    private String content;
+
+    private LocalDateTime dateAsked;
+}

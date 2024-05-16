@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface HistoriqueRepository extends JpaRepository<Historique,Long> {
 
-    List<Historique> getByUser(User user);
+    List<Historique> getByUserAndEtat(User user,String etat);
     void deleteAllByUser(User user);
 }
