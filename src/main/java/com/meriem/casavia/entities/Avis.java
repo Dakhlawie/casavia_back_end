@@ -24,7 +24,9 @@ public class Avis {
     private int comfort;
     private int facilities;
     private int cleanliness;
+    private int security;
     private LocalDate date;
+    private double moyenne;
 
     @ManyToOne
     private User user;

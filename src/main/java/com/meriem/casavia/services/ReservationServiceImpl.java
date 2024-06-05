@@ -1,5 +1,6 @@
 package com.meriem.casavia.services;
 
+import com.meriem.casavia.entities.EtatReservation;
 import com.meriem.casavia.entities.Hebergement;
 import com.meriem.casavia.entities.Reservation;
 import com.meriem.casavia.entities.User;
@@ -94,7 +95,7 @@ public class ReservationServiceImpl implements ReservationService{
     @Override
     public void sendConfirmation(Reservation reservation) {
         Reservation r=this.ReservationRep.findById(reservation.getId()).get();
-        r.setEtat("confirme");
+        r.setEtat(EtatReservation.CONFIRMED);
         this.ReservationRep.save(r);
         MimeMessage message = mailSender.createMimeMessage();
         try {

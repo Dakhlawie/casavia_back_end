@@ -109,7 +109,7 @@ public class ImageRestController {
         if (Files.exists(imagePath)) {
             return Files.readAllBytes(imagePath);
         } else {
-            // Utilisez le chemin absolu vers l'image par défaut
+
             Path defaultImagePath = Paths.get(System.getProperty("user.home") + "/images/admin.png");
             return Files.readAllBytes(defaultImagePath);
         }

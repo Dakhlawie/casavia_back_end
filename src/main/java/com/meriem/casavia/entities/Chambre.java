@@ -36,6 +36,7 @@ public class Chambre {
             joinColumns = @JoinColumn(name = "chambre_id"),
             inverseJoinColumns = @JoinColumn(name = "equipement_id")
     )
+    @JsonIgnore
     private List<Equipement> equipements;
     private long nbRoom;
     @JsonIgnore
@@ -44,8 +45,7 @@ public class Chambre {
     @OneToMany(mappedBy = "chambre",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Dates> reservationDates;
-    @ManyToMany(mappedBy = "chambres")
-    private List<Reservation> reservations;
+
 
     @Override
     public String toString() {

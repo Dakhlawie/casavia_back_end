@@ -28,7 +28,7 @@ public class ReservationRestController {
     PersonRepository personRep;
     @PostMapping("/save")
     public Reservation ajouterReservation(@RequestBody Reservation reservation,@RequestParam long user,@RequestParam long hebergement){
-        reservation.setEtat("En attente");
+        reservation.setEtat(EtatReservation.PENDING);
         reservation.setHebergement(hebergementRep.findById(hebergement).get());
         reservation.setUser(userRep.findById(user).get());
         return Reservationserv.ajouterReservation(reservation);
@@ -51,7 +51,7 @@ public class ReservationRestController {
         return this.ReservationRep.findByEtat(etat);
     }
     @PutMapping("/modifEtat/{id}")
-    public Reservation modifierEtatReservation(@PathVariable("id") long id,String etat ){
+    public Reservation modifierEtatReservation(@PathVariable("id") long id,EtatReservation etat ){
         Reservation r=this.ReservationRep.findById(id).get();
         r.setEtat(etat);
         return this.ReservationRep.save(r);
@@ -100,5 +100,29 @@ public class ReservationRestController {
     @GetMapping("/years")
     public List<Object[]> getYearlyReservation(){
         return this.ReservationRep.countReservationsByYearForLastFiveYears();
+    }
+    @GetMapping("/person/pending/{id}")
+    public List<Reservation> getPendingReservationByPerson(@PathVariable("id") long id){
+        return ReservationRep.findPendingReservationsByPerson(id);
+    }
+    @GetMapping("/person/confirmed/{id}")
+    public List<Reservation> getConfirmedReservationByPerson(@PathVariable("id") long id){
+        return ReservationRep.findConfirmedReservationsByPerson(id);
+    }
+    @GetMapping("/person/completed/{id}")
+    public List<Reservation> getCompletedReservationByPerson(@PathVariable("id") long id){
+        return ReservationRep.findCompletedReservationsByPerson(id);
+    }
+    @GetMapping("/person/cancelled/{id}")
+    public List<Reservation> getCancelledReservationByPerson(@PathVariable("id") long id){
+        return ReservationRep.findCancelledReservationsByPerson(id);
+    }
+    @GetMapping("/user/pendingOrConfirmed/{id}")
+    public List<Reservation> getPendingOrConfirmedReservationByUser(@PathVariable("id") long id ){
+        return ReservationRep.findPendingOrConfirmedReservationsByUser(id);
+    }
+    @GetMapping("/user/completed/{id}")
+    public List<Reservation> getCompletedReservationByUser(@PathVariable("id") long id){
+        return ReservationRep.findCompletedReservationsByUser(id);
     }
 }

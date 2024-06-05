@@ -31,12 +31,19 @@ public class QuestionRestController {
     }
     @GetMapping("/person/{id}")
     public List<Question> getQuestions(@PathVariable("id") long id){
-        return questionRep.findQuestionsByPersonIdOrderByDateAskedDesc(id);
+        return questionRep.findQuestionsByPersonIdAndEmptyReponseOrderByDateAskedDesc(id);
     }
     @GetMapping("/user/hebergement")
     public List<Question> findByUserAndHebergement(@RequestParam long hebergement,@RequestParam long user){
+        System.out.println("***************************************************hello");
         Hebergement h=hebergementRep.findById(hebergement).get();
         User u=userRep.findById(user).get();
+        System.out.println(questionRep.findByHebergementAndUser(h,u));
         return questionRep.findByHebergementAndUser(h,u);
+    }
+    @GetMapping("/{id}")
+    public User getUserByQuestion (@PathVariable("id") long id){
+
+        return questionRep.findUserByQuestionId(id);
     }
 }

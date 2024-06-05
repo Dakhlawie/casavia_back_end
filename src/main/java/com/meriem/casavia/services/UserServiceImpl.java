@@ -75,6 +75,14 @@ public class UserServiceImpl implements UserService {
         return u;
     }
 
+    @Override
+    public User modifierUserFlag(long id, String flag) {
+        User u =UserRep.findById(id).get();
+        u.setFlag(flag);
+        UserRep.save(u);
+        return u;
+    }
+
 
     @Override
     public User getUser(Long id) {

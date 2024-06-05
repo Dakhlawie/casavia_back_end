@@ -28,6 +28,7 @@ public class User {
     private String email;
     private String mot_de_passe;
      private String image_path;
+     private String flag;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Avis> avisList;
@@ -43,8 +44,7 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Recommandation> recommandations;
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Message> sentMessages;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
 

@@ -34,5 +34,13 @@ public class Equipement {
     @ManyToMany(mappedBy = "equipements")
 
     private List<Hebergement> hebergements ;
+    @Override
+    public String toString() {
+        return "Equipement{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+
+                '}';
+    }
 
 }

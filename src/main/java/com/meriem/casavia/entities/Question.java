@@ -32,4 +32,14 @@ public class Question {
     private String content;
 
     private LocalDateTime dateAsked;
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+
+
+                ", content='" + content + '\'' +
+                ", dateAsked=" + dateAsked +
+                '}';
+    }
 }

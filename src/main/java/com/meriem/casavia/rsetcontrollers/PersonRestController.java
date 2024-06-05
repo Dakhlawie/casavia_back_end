@@ -90,4 +90,8 @@ public class PersonRestController {
     public Object getStatistic(@PathVariable("id") long id){
         return this.personRep.getPersonStatistics(id);
 }
+  @GetMapping("/findbyEmailOrNomOrPrenom")
+    public List<Person> findPerson(@RequestParam String term){
+        return this.personRep.findByEmailOrNomOrPrenom(term);
+   }
 }

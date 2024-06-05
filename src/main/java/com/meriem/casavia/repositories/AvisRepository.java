@@ -2,6 +2,8 @@ package com.meriem.casavia.repositories;
 
 import com.meriem.casavia.entities.Avis;
 import com.meriem.casavia.entities.Hebergement;
+import com.meriem.casavia.entities.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -45,7 +47,18 @@ public interface AvisRepository extends JpaRepository<Avis,Long> {
             "GROUP BY FUNCTION('MONTH', a.date) " +
             "ORDER BY FUNCTION('MONTH', a.date)")
     List<Object[]> findMonthlyNegativeCounts(@Param("hebergement") Hebergement hebergement);
+    @Query("SELECT new map(avg(a.security) as securityAverage, avg(a.location) as locationAverage, avg(a.comfort) as comfortAverage, avg(a.facilities) as facilitiesAverage, avg(a.cleanliness) as cleanlinessAverage, (avg(a.staff) + avg(a.location) + avg(a.comfort) + avg(a.facilities) + avg(a.cleanliness)) / 5 as overallAverage) FROM Avis a WHERE a.hebergement = :hebergement")
+    Map<String, Double> findAveragesByOtherHebergement(@Param("hebergement") Hebergement hebergement);
+    @Query("SELECT a FROM Avis a WHERE a.hebergement = :hebergement AND a.avis IS NOT NULL AND a.avis != '' " +
+            "AND (a.avisNegative IS NULL OR a.avisNegative = '') " +
+            "ORDER BY (a.staff + a.location + a.comfort + a.facilities + a.cleanliness) / 5 DESC")
+    List<Avis> findTop4AvisForHotel(@Param("hebergement") Hebergement hebergement, Pageable pageable);
 
-
+    // Méthode pour trouver les 4 meilleurs avis pour les autres hébergements sans avis négatif
+    @Query("SELECT a FROM Avis a WHERE a.hebergement = :hebergement AND a.avis IS NOT NULL AND a.avis != '' " +
+            "AND (a.avisNegative IS NULL OR a.avisNegative = '') " +
+            "ORDER BY (a.security + a.location + a.comfort + a.facilities + a.cleanliness) / 5 DESC")
+    List<Avis> findTop4AvisForOtherHebergement(@Param("hebergement") Hebergement hebergement, Pageable pageable);
+    List<Avis> findAvisByUser(User u);
 
 }

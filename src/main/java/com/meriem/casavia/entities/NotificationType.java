@@ -9,5 +9,7 @@ public enum NotificationType {
     OFFRE,
     MAIL,
     ANNULATION,
-    LIKE
+    LIKE,
+    RESPONSE,
+    CONFIRMED,
 }

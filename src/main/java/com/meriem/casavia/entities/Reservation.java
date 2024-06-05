@@ -25,20 +25,20 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "hebergement_id")
     private Hebergement hebergement;
-
     private String dateCheckIn;
-
     private String dateCheckOut;
-
     private String prix;
-
-    private String etat;
+    private String currency;
+    private String nom;
+    private String prenom;
+    private String email;
+    private String tlf;
+    private String country;
+    @Enumerated(EnumType.STRING)
+    private EtatReservation etat;
     private String nbRooms;
-    @ManyToMany
-    @JoinTable(
-            name = "reservation_chambre",
-            joinColumns = @JoinColumn(name = "reservation_id"),
-            inverseJoinColumns = @JoinColumn(name = "chambre_id")
-    )
-    private List<Chambre> chambres;
+    @ElementCollection
+    @CollectionTable(name = "reservation_rooms", joinColumns = @JoinColumn(name = "reservation_id"))
+    @Column(name = "room_id")
+    private List<Long> rooms;
 }

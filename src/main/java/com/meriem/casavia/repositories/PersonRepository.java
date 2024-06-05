@@ -4,6 +4,7 @@ import com.meriem.casavia.entities.Person;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface PersonRepository extends JpaRepository<Person,Long> {
             "WHERE p.person_id = :personId " +
             "GROUP BY p.person_id")
     Object getPersonStatistics(Long personId);
+    @Query("SELECT p FROM Person p WHERE (p.email LIKE %:searchTerm% OR p.nom LIKE %:searchTerm% OR p.prenom LIKE %:searchTerm%) AND p.role = 'partenaire'")
+    List<Person> findByEmailOrNomOrPrenom(@Param("searchTerm") String searchTerm);
 }

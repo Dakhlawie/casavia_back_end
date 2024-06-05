@@ -21,5 +21,6 @@ public interface HebergementService {
     List<Hebergement> findHebergementsLikedByUser(User user);
     List<Hebergement> findHebergementsReservedByUser(User user);
     Hebergement getHebergementFromRecommandation(Long recommandationId);
+    public List<Hebergement> findNearbyHebergements(double latitude, double longitude);
 
 }

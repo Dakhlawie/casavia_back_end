@@ -28,8 +28,7 @@ public class Person {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Hebergement> hebergements;
-    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Message> receivedMessages;
+
     @JsonIgnore
     @OneToMany(mappedBy = "person")
     private List<Notification> notifications;

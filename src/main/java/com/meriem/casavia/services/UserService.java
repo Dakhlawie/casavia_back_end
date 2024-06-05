@@ -9,6 +9,7 @@ public interface UserService {
     User modifierUserEmail(long id,String email);
     User modifierUserPays(long id,String pays);
     User modifierUsertlf(long id,String phone);
+    User modifierUserFlag(long id,String flag);
 
     User getUser(Long id);
     String sendCodeByEmail(String email,String code);

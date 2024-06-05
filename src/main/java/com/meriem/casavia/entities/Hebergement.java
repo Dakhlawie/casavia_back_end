@@ -52,6 +52,7 @@ public class Hebergement {
     @ManyToOne
     private Categorie categorie;
     @OneToMany (mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
+
     private List<Image> images;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -64,12 +65,14 @@ public class Hebergement {
     @JoinTable(name = "hebergement_language",
             joinColumns = @JoinColumn(name = "hebergement_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id"))
+
     private List<language> languages;
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
 
     private List<Avis> avisList;
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
+
     private List<Chambre> chambres;
 
     @ManyToOne
@@ -97,7 +100,7 @@ public class Hebergement {
     @JsonIgnore
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Recommandation> recommandations;
-    @JsonIgnore
+
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OffreHebergement> offres;
     @JsonIgnore

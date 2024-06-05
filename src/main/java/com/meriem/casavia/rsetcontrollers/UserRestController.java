@@ -49,7 +49,11 @@ public User ajouterUser(@RequestBody User user){
         user.setMot_de_passe(this.bCryptPasswordEncoder.encode(user.getMot_de_passe()));
         return userService.ajouterUser(user);
     }
-
+    @DeleteMapping("/delete/{id}")
+    public void supprimerUser(@PathVariable("id") long id)
+    {
+        userRepository.deleteById(id);
+    }
     @PutMapping("/updatenom/{id}")
     public User modifierUserNom(@PathVariable Long id,@RequestBody String nom){
 
@@ -74,6 +78,11 @@ public User ajouterUser(@RequestBody User user){
     public User modifierUserTlf(@PathVariable Long id,@RequestBody String phone){
 
         return userService.modifierUsertlf(id,phone);
+    }
+    @PutMapping("/updateflag/{id}")
+    public User modifierUserFlag(@PathVariable Long id,@RequestBody String flag){
+
+        return userService.modifierUserFlag(id,flag);
     }
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> loginUser(@RequestBody User user) {

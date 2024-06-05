@@ -14,6 +14,8 @@ public class AccountClosure {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long account_id;
+    private String username;
+    private String email;
 
     @Lob
     @Column(name = "message", columnDefinition = "TEXT")

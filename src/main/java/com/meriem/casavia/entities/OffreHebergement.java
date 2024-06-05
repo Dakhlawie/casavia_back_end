@@ -1,5 +1,6 @@
 package com.meriem.casavia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class OffreHebergement {
     private String end_date;
     private boolean allRooms;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "hebergement_id")
     private Hebergement hebergement;
 

@@ -1,6 +1,5 @@
 package com.meriem.casavia.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,15 +8,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+
 @Entity
-public class Reponse {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
-
-    private String content;
+    private double price;
+    private String currency;
+    private String method;
+    private String intent;
+    private String description;
+    private String paymentId;
+    private String payerId;
 }
