@@ -2,12 +2,8 @@ package com.meriem.casavia.services;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Charge;
-import com.stripe.model.Refund;
-import com.stripe.model.Token;
-import com.stripe.param.ChargeCreateParams;
-import com.stripe.param.RefundCreateParams;
-import com.stripe.param.TokenCreateParams;
+import com.stripe.model.*;
+import com.stripe.param.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StripeService {
 
-    @Value("${stripe.api.secretKey}")
+    @Value("${STRIPE_SECRET_KEY}")
     private String apiKey;
 
     @PostConstruct
@@ -25,29 +21,31 @@ public class StripeService {
         Stripe.apiKey = apiKey;
     }
 
-    public Token createCardToken(String number, int expMonth, int expYear, String cvc) throws StripeException {
-        TokenCreateParams.Card card = TokenCreateParams.Card.builder()
+    public PaymentMethod createPaymentMethod(String number, int expMonth, int expYear, String cvc) throws StripeException {
+        PaymentMethodCreateParams.CardDetails card = PaymentMethodCreateParams.CardDetails.builder()
                 .setNumber(number)
-                .setExpMonth(String.valueOf(expMonth))
-                .setExpYear(String.valueOf(expYear))
+                .setExpMonth((long) expMonth)
+                .setExpYear((long) expYear)
                 .setCvc(cvc)
                 .build();
 
-        TokenCreateParams params = TokenCreateParams.builder()
+        PaymentMethodCreateParams params = PaymentMethodCreateParams.builder()
+                .setType(PaymentMethodCreateParams.Type.CARD)
                 .setCard(card)
                 .build();
 
-        return Token.create(params);
+        return PaymentMethod.create(params);
     }
 
-    public Charge createCharge(String token, int amount, String currency) throws StripeException {
-        ChargeCreateParams chargeParams = ChargeCreateParams.builder()
+    public PaymentIntent createPaymentIntent(int amount, String currency, String paymentMethodId) throws StripeException {
+        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount((long) amount)
                 .setCurrency(currency)
-                .setSource(token)
+                .setPaymentMethod("pm_card_visa")
+                .setConfirm(true) // Confirmez le paiement immédiatement
                 .build();
 
-        return Charge.create(chargeParams);
+        return PaymentIntent.create(params);
     }
 
     public Refund refundCharge(String chargeId, int amount) throws StripeException {

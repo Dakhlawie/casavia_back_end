@@ -4,9 +4,7 @@ import com.meriem.casavia.entities.ChargeRequest;
 import com.meriem.casavia.entities.PaymentResponse;
 import com.meriem.casavia.services.StripeService;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Charge;
-import com.stripe.model.Refund;
-import com.stripe.model.Token;
+import com.stripe.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,35 +22,39 @@ public class StripeController {
     @Autowired
     private StripeService stripeService;
     private static final Logger logger = Logger.getLogger(StripeController.class.getName());
+
     @PostMapping("/charge")
     public ResponseEntity<Object> charge(@RequestBody ChargeRequest request) {
         try {
             logger.info("Received charge request: " + request);
 
-            logger.info("Creating card token...");
-            Token token = stripeService.createCardToken(
+            // Création de la méthode de paiement
+            logger.info("Creating payment method...");
+            PaymentMethod paymentMethod = stripeService.createPaymentMethod(
                     request.getNumber(),
                     request.getExpMonth(),
                     request.getExpYear(),
                     request.getCvc()
             );
 
-            logger.info("Card token created successfully: " + token.getId());
+            logger.info("Payment method created successfully: " + paymentMethod.getId());
 
-            logger.info("Creating charge...");
-            Charge charge = stripeService.createCharge(
-                    token.getId(),
+            // Création de l'intention de paiement
+            logger.info("Creating payment intent...");
+            PaymentIntent paymentIntent = stripeService.createPaymentIntent(
                     request.getAmount() * 100, // Montant en cents
-                    request.getCurrency()
+                    request.getCurrency(),
+                    paymentMethod.getId()
             );
 
-            logger.info("Charge created successfully: " + charge.getId());
+            logger.info("Payment intent created successfully: " + paymentIntent.getId());
 
+            // Construction de la réponse
             PaymentResponse response = new PaymentResponse();
-            response.setId(charge.getId());
-            response.setAmount(charge.getAmount().intValue());
-            response.setCurrency(charge.getCurrency());
-            response.setStatus(charge.getStatus());
+            response.setId(paymentIntent.getId());
+            response.setAmount(paymentIntent.getAmount().intValue());
+            response.setCurrency(paymentIntent.getCurrency());
+            response.setStatus(paymentIntent.getStatus());
 
             return ResponseEntity.ok(response);
         } catch (StripeException e) {

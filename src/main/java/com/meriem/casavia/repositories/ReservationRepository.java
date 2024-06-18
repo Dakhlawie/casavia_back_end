@@ -55,8 +55,9 @@ public interface ReservationRepository  extends JpaRepository<Reservation,Long> 
          "GROUP BY EXTRACT(YEAR FROM STR_TO_DATE(r.date_check_in, '%d/%m/%Y')) " +
          "ORDER BY year", nativeQuery = true)
  List<Object[]> countReservationsByYearForLastFiveYears();
- @Query("SELECT r FROM Reservation r JOIN r.hebergement h JOIN h.person p WHERE p.person_id = :personId AND r.etat = 'PENDING' ORDER BY FUNCTION('STR_TO_DATE', r.dateCheckIn, '%d/%m/%Y') DESC")
- List<Reservation> findPendingReservationsByPerson(@Param("personId") Long personId);
+ @Query("SELECT r FROM Reservation r JOIN r.hebergement h JOIN h.person p WHERE p.person_id = :personId AND (r.etat = 'PENDING' OR r.etat = 'UPDATED') ORDER BY FUNCTION('STR_TO_DATE', r.dateCheckIn, '%d/%m/%Y') DESC")
+ List<Reservation> findPendingOrUpdatedReservationsByPerson(@Param("personId") Long personId);
+
 
  @Query("SELECT r FROM Reservation r JOIN r.hebergement h JOIN h.person p WHERE p.person_id = :personId AND r.etat = 'CONFIRMED' ORDER BY FUNCTION('STR_TO_DATE', r.dateCheckIn, '%d/%m/%Y') DESC")
  List<Reservation> findConfirmedReservationsByPerson(@Param("personId") Long personId);
@@ -69,8 +70,9 @@ public interface ReservationRepository  extends JpaRepository<Reservation,Long> 
  @Query("SELECT r FROM Reservation r JOIN r.user u WHERE u.user_id = :userId AND r.etat = 'COMPLETED' ORDER BY FUNCTION('STR_TO_DATE', r.dateCheckIn, '%d/%m/%Y') DESC")
  List<Reservation> findCompletedReservationsByUser(@Param("userId") Long userId);
 
- @Query("SELECT r FROM Reservation r JOIN r.user u WHERE u.user_id = :userId AND (r.etat = 'PENDING' OR r.etat = 'CONFIRMED') ORDER BY FUNCTION('STR_TO_DATE', r.dateCheckIn, '%d/%m/%Y') DESC")
- List<Reservation> findPendingOrConfirmedReservationsByUser(@Param("userId") Long userId);
+ @Query("SELECT r FROM Reservation r JOIN r.user u WHERE u.user_id = :userId AND (r.etat = 'PENDING' OR r.etat = 'CONFIRMED' OR r.etat = 'UPDATED') ORDER BY FUNCTION('STR_TO_DATE', r.dateCheckIn, '%d/%m/%Y') DESC")
+ List<Reservation> findPendingOrConfirmedOrUpdatedReservationsByUser(@Param("userId") Long userId);
+
 
 
 }

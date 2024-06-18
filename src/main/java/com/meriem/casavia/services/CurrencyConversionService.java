@@ -13,8 +13,8 @@ import java.util.Map;
 @Service
 public class CurrencyConversionService {
     private static final Logger logger = LoggerFactory.getLogger(CurrencyConversionService.class);
-    private final String apiKey = "450a1a0bba3256d0d134d23a";
-
+    private final String apiKey = "49a122c7e114cbe35a55624c";
+  
     private final RestTemplate restTemplate = new RestTemplate();
     private final String API_URL_TEMPLATE = "https://v6.exchangerate-api.com/v6/%s/latest/%s";
 

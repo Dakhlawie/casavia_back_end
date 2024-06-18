@@ -49,5 +49,10 @@ public class OffreRestController {
     public OffreHebergement getOffreById( @PathVariable("id") long id){
 return this.offreRep.findById(id).get();
     }
+    @GetMapping("/hebergement/{id}")
+    public Hebergement getHebergementByOffre(@PathVariable("id") Long offreId) {
+        System.out.println(offreRep.findHebergementByOffreId(offreId));
+        return offreRep.findHebergementByOffreId(offreId);
+    }
 
 }

@@ -119,7 +119,6 @@ public class AvisRestController {
         } else {
             return avisRep.findTop4AvisForOtherHebergement(h, pageable);
         }
-
     }
     @GetMapping("/avis/user/{id}")
     public List<Avis> getAvisByUser(@PathVariable("id") long id){
@@ -127,5 +126,16 @@ public class AvisRestController {
         User u =userRep.findById(id).get();
         return this.avisRep.findAvisByUser(u);
     }
-
+@GetMapping("/Hebergement/{id}")
+List<Avis> findByHebergement(@PathVariable("id") long id ){
+	Hebergement h=hebergementRepository.findById(id).get();
+	return this.avisRep.findByHebergement(h);
+	}
+    @GetMapping("/hasUserLeftReview")
+    public Boolean hasUserLeftReview(@RequestParam Long hebergementId, @RequestParam Long userId) {
+        Hebergement hebergement = hebergementRepository.findById(hebergementId).get();
+                User user = userRep.findById(userId).get();
+        boolean hasLeftReview = avisRep.existsByHebergementAndUser(hebergement, user);
+        return hasLeftReview;
+    }
 }

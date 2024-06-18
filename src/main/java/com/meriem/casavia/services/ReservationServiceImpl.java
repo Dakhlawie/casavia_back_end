@@ -25,7 +25,14 @@ public class ReservationServiceImpl implements ReservationService{
         return this.ReservationRep.save(r);
     }
     public void annulerReservation(Long id){
-        this.ReservationRep.deleteById(id);
+        Reservation rv=ReservationRep.findById(id).get();
+        rv.setEtat(EtatReservation.CANCELLED);
+        ReservationRep.save(rv);
+    }
+    public void confirmerReservation(Long id){
+        Reservation rv=ReservationRep.findById(id).get();
+        rv.setEtat(EtatReservation.CONFIRMED);
+        ReservationRep.save(rv);
     }
 
     public void sendEmail(Reservation reservation){
@@ -257,4 +264,73 @@ public class ReservationServiceImpl implements ReservationService{
 
 
     }
+    @Override
+    public String sendConfirmationEmail(Reservation reservation) {
+        MimeMessage message = mailSender.createMimeMessage();
+
+        String firstName = reservation.getUser().getPrenom();
+        String lastName = reservation.getUser().getNom();
+        String checkInDate = reservation.getDateCheckIn();
+        String checkOutDate = reservation.getDateCheckOut();
+        String accommodationName = reservation.getHebergement().getNom();
+        double totalPrice = reservation.getPrix();
+        String currency = reservation.getCurrency();
+        String additionalInfo = "";
+
+        if (reservation.getHebergement().getCategorie().getIdCat() == 1) {
+            int nbRooms = reservation.getNbRooms();
+            additionalInfo = "<li><strong>- Number of rooms:</strong> " + nbRooms + "</li>";
+        }
+
+        String htmlBody = "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<style>" +
+                "body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #ffffff; text-align: center;}" +
+                ".header img { width: 20%; max-width: 200px; margin: 20px auto; margin: 0 auto; display: block; }" +
+                ".container {  margin: 0 auto;width: 600px; border: 1px solid #ccc; padding: 20px; background-color: #f9f9f9;box-sizing: border-box; }" +
+                ".footer { text-align: left; width: 600px; margin: 20px auto; padding: 0 20px; }" +
+                ".button { background-color: #0b2370; color: white; padding: 10px 20px; text-decoration: none; border: none; border-radius: 3px; cursor: pointer; }" +
+                "h2 { color: #0b2370; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<div class='header'>" +
+                "<img src='https://drive.google.com/uc?export=view&id=1fok6tD7IdiNQ2C1IROCrs4Lu3ptIggKy' alt='CASAVIA Logo'>" +
+                "</div>" +
+                "<div class='container'>" +
+                "<h2>Hello " + firstName + " " + lastName + ",</h2>" +
+                "<p>Thank you for your reservation.</p>" +
+                "<p>Here are the details of your reservation:</p>" +
+                "<ul style='list-style: none; padding: 0; text-align: left;'>" +
+                "<li><strong>- Check-in:</strong> " + checkInDate + "</li>" +
+                "<li><strong>- Check-out:</strong> " + checkOutDate + "</li>" +
+                "<li><strong>- Accommodation:</strong> " + accommodationName + "</li>" +
+
+                additionalInfo +
+                "</ul>" +
+                "<p>If you have any questions or need to make changes to your reservation, please <a href='http://localhost:4200/contact'>contact us</a>. You can also reach us by chat.</p>" +
+                "</div>" +
+                "<div class='footer'>" +
+                "<p>Regards,</p>" +
+                "<p>The Casavia Team</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(from);
+            helper.setTo(reservation.getUser().getEmail());
+            helper.setSubject("Your Reservation Confirmation");
+
+            helper.setText(htmlBody, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return reservation.getUser().getEmail();
+    }
+
+
 }

@@ -10,6 +10,8 @@ import com.meriem.casavia.services.DatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -64,6 +66,12 @@ public class DatesRestController {
                                      @RequestParam("checkIn") String checkIn,
                                      @RequestParam("checkOut") String checkOut){
         return this.Datesserv.isHebergementAvailable(hebergementId,checkIn,checkOut);
+    }
+    @GetMapping("/availableRooms")
+    public int getAvailableRooms(@RequestParam long chambreId,
+                                 @RequestParam String checkIn,
+                                 @RequestParam String checkOut) {
+        return this.Datesserv.getAvailableRooms(chambreId, checkIn, checkOut);
     }
 
 

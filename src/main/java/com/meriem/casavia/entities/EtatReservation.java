@@ -5,5 +5,6 @@ public enum EtatReservation {
     PENDING,
     CONFIRMED,
     CANCELLED,
-    COMPLETED
+    COMPLETED,
+    UPDATED
 }

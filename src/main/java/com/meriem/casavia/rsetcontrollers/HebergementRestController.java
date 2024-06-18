@@ -40,6 +40,36 @@ public class HebergementRestController {
     public List<Hebergement> getAllHebergements() {
         return hebergementService.getAllHebergements();
     }
+    @PutMapping("/{id}/updateMoyenne")
+    public void updateHebergementMoyenne(@PathVariable Long id,
+                                         @RequestParam int staff,
+                                         @RequestParam int location,
+                                         @RequestParam int comfort,
+                                         @RequestParam int facilities,
+                                         @RequestParam int cleanliness,
+                                         @RequestParam int security,
+                                         @RequestParam int nbAvis,
+                                         @RequestParam double moyenne) {
+        Hebergement existingHebergement = hebergementRep.findById(id).orElseThrow(() -> new RuntimeException("Hebergement not found"));
+        
+        existingHebergement.setLocation(location);
+        existingHebergement.setComfort(comfort);
+        existingHebergement.setFacilities(facilities);
+        existingHebergement.setCleanliness(cleanliness);
+        
+        if (existingHebergement.getCategorie().getIdCat() != 1) {
+            existingHebergement.setSecurity(security);
+        }
+        
+        if (existingHebergement.getCategorie().getIdCat() == 1) {
+            existingHebergement.setStaff(staff);
+        }
+        
+        existingHebergement.setMoyenne(moyenne);
+        existingHebergement.setNbAvis(nbAvis);  // Mettre à jour le nombre d'avis
+        
+        hebergementRep.save(existingHebergement);
+    }
 
     @PostMapping("/save")
     public Hebergement createHebergement(@RequestParam Long categorie,@RequestParam Long person,@RequestBody Hebergement hebergement) {
@@ -50,6 +80,11 @@ public class HebergementRestController {
 
         return hebergementService.createHebergement(hebergement);
 
+    }
+    @GetMapping("/calculateDiscountedPrice")
+    public double calculateDiscountedPrice(@RequestParam double price, @RequestParam int discount) {
+        double discountedPrice = price - (price * discount / 100);
+        return discountedPrice;
     }
 
     @PutMapping("/update/{id}")
@@ -567,5 +602,29 @@ public List<Hebergement> getTop10Hebergements() {
     public List<OffreHebergement> getOffersByHebergementId(@PathVariable Long hebergementId) {
         return hebergementRep.findOffersByHebergementId(hebergementId);
     }
+    @PostMapping("/currency/convertHebergementPrices")
+    public Hebergement convertHebergementPrices(@RequestBody Hebergement hebergement,
+                                                @RequestParam String targetCurrency) {
+        double conversionRate = currencyConversionService.getConversionRate(hebergement.getCurrency(), targetCurrency);
+        hebergement.setPrix(hebergement.getPrix() * conversionRate);
+        hebergement.setCurrency(targetCurrency);
 
+        if (hebergement.getChambres() != null && !hebergement.getChambres().isEmpty()) {
+            for (Chambre chambre : hebergement.getChambres()) {
+                chambre.setPrix(chambre.getPrix() * conversionRate);
+            }
+        }
+
+        return hebergement;
+    }
+    @GetMapping("/currency/convert")
+    public double convertPrice(@RequestParam double price,
+                               @RequestParam String sourceCurrency,
+                               @RequestParam String targetCurrency) {
+        return currencyConversionService.convertPrice(price, sourceCurrency, targetCurrency);
+    }
+    @GetMapping("/convertToTND")
+    public double convertPriceToTND(@RequestParam double amount, @RequestParam String currency) {
+        return currencyConversionService.convertToTunisianDinar(amount, currency);
+    }
 }

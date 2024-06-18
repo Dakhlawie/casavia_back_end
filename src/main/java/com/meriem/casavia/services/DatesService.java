@@ -11,4 +11,5 @@ public interface DatesService {
     List<Dates> getAllDates();
     boolean isRoomAvailable(long id , String checkIn, String checkOut);
     boolean isHebergementAvailable(long id,String checkIn, String checkOut);
+    int getAvailableRooms(long chambreId, String checkIn, String checkOut);
 }

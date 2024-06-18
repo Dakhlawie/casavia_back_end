@@ -50,7 +50,7 @@ public class HebergementServiceImpl implements HebergementService{
         h.setFacebook(hebergement.getFacebook());
         h.setInstagram(hebergement.getInstagram());
         h.setFax(hebergement.getFax());
-        h.setEquipements(hebergement.getEquipements());
+        
         h.setLanguages(hebergement.getLanguages());
         h.setCountry_code(hebergement.getCountry_code());
         h.setCurrency(hebergement.getCurrency());

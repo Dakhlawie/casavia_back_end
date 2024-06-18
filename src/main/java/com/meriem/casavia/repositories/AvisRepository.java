@@ -14,8 +14,18 @@ import java.util.Map;
 
 public interface AvisRepository extends JpaRepository<Avis,Long> {
     List<Avis> findByHebergement(Hebergement hebergement, Sort sort);
-    @Query("SELECT new map(avg(a.staff) as staffAverage, avg(a.location) as locationAverage, avg(a.comfort) as comfortAverage, avg(a.facilities) as facilitiesAverage, avg(a.cleanliness) as cleanlinessAverage, (avg(a.staff) + avg(a.location) + avg(a.comfort) + avg(a.facilities) + avg(a.cleanliness)) / 5 as overallAverage) FROM Avis a WHERE a.hebergement = :hebergement")
+    @Query("SELECT new map(avg(case when a.hebergement.categorie.idCat != 1 then a.security else a.staff end) as staffOrSecurityAverage, " +
+            "avg(a.location) as locationAverage, " +
+            "avg(a.comfort) as comfortAverage, " +
+            "avg(a.facilities) as facilitiesAverage, " +
+            "avg(a.cleanliness) as cleanlinessAverage, " +
+            "(avg(case when a.hebergement.categorie.idCat != 1 then a.security else a.staff end) + " +
+            "avg(a.location) + avg(a.comfort) + avg(a.facilities) + avg(a.cleanliness)) / 5 as overallAverage) " +
+            "FROM Avis a WHERE a.hebergement = :hebergement")
     Map<String, Double> findAveragesByHebergement(@Param("hebergement") Hebergement hebergement);
+
+
+
     @Query("SELECT COUNT(a) FROM Avis a WHERE a.hebergement = :hebergement AND a.avis IS NOT NULL AND a.avis != ''")
     long countPositiveReviews(Hebergement hebergement);
 
@@ -60,5 +70,8 @@ public interface AvisRepository extends JpaRepository<Avis,Long> {
             "ORDER BY (a.security + a.location + a.comfort + a.facilities + a.cleanliness) / 5 DESC")
     List<Avis> findTop4AvisForOtherHebergement(@Param("hebergement") Hebergement hebergement, Pageable pageable);
     List<Avis> findAvisByUser(User u);
+    List<Avis> findByHebergement(Hebergement h);
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Avis a WHERE a.hebergement = :hebergement AND a.user = :user")
+    boolean existsByHebergementAndUser(@Param("hebergement") Hebergement hebergement, @Param("user") User user);
 
 }

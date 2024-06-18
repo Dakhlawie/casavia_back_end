@@ -12,5 +12,7 @@ public interface ReservationService {
     void sendEmail(Reservation reservation);
     void sendConfirmation(Reservation reservation);
     void sendAnnulation(Reservation reservation);
+    void confirmerReservation(Long id);
+    String sendConfirmationEmail(Reservation reservation);
 
 }

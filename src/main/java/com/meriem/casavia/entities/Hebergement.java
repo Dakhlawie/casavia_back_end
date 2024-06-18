@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +48,15 @@ public class Hebergement {
     private String country_code;
     private String currency;
     private String cancellationfees;
+    private double staff;
+    private double location;
+    private double comfort;
+    private double facilities;
+    private double cleanliness;
+    private double security;
+   
+    private double moyenne;
+    private int nbAvis;
 
 
     @ManyToOne
@@ -100,7 +110,7 @@ public class Hebergement {
     @JsonIgnore
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Recommandation> recommandations;
-
+    
     @OneToMany(mappedBy = "hebergement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OffreHebergement> offres;
     @JsonIgnore

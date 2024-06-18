@@ -85,6 +85,25 @@ Chambre chambre=chambreRep.findById(id).get();
         }
         return true;
     }
+    public int getAvailableRooms(long chambreId, String checkIn, String checkOut) {
+        Chambre chambre = chambreRep.findById(chambreId).get();
+        List<Dates> reservedDates = DatesRep.findByChambre(chambre);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate checkInDate = LocalDate.parse(checkIn, formatter);
+        LocalDate checkOutDate = LocalDate.parse(checkOut, formatter);
+
+        long reservedCount = reservedDates.stream()
+                .filter(d -> {
+                    LocalDate startDate = LocalDate.parse(d.getStartDate(), formatter);
+                    LocalDate endDate = LocalDate.parse(d.getEndDate(), formatter);
+                    return !(endDate.isBefore(checkInDate) || startDate.isAfter(checkOutDate));
+                })
+                .count();
+
+        return (int) (chambre.getNbRoom() - reservedCount);
+    }
+
 }
 
 

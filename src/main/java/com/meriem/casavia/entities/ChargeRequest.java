@@ -8,7 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ChargeRequest {
-
     private int amount;
     private String currency;
     private String number;

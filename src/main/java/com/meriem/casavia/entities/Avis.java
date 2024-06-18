@@ -17,7 +17,11 @@ public class Avis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long avisId;
+    @Lob
+    @Column( columnDefinition = "TEXT")
     private String avis;
+    @Lob
+    @Column( columnDefinition = "TEXT")
     private String avisNegative;
     private int staff;
     private int location;

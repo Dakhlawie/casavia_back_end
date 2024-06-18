@@ -1,5 +1,6 @@
 package com.meriem.casavia.services;
 
+import com.meriem.casavia.entities.RefundRequest;
 import com.meriem.casavia.repositories.OrderRepository;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
@@ -95,15 +96,30 @@ public class PaypalService {
 
         return executedPayment;
     }
+    public String getSaleIdByTransactionId(String transactionId) throws PayPalRESTException {
+        Payment payment = Payment.get(apiContext, transactionId);
+        List<Transaction> transactions = payment.getTransactions();
+        if (transactions != null && !transactions.isEmpty()) {
+            List<RelatedResources> relatedResources = transactions.get(0).getRelatedResources();
+            if (relatedResources != null && !relatedResources.isEmpty()) {
+                Sale sale = relatedResources.get(0).getSale();
+                if (sale != null) {
+                    return sale.getId();
+                }
+            }
+        }
+        throw new PayPalRESTException("Sale ID not found for transaction ID: " + transactionId);
+    }
 
-    public Refund refundPayment(String saleId, double amount, String currency) throws PayPalRESTException {
+    public Refund refundPayment(String transactionId, double amount, String currency) throws PayPalRESTException {
+
         Sale sale = new Sale();
-        sale.setId(saleId);
+        sale.setId(transactionId);
+
 
         Amount refundAmount = new Amount();
         refundAmount.setCurrency(currency);
         refundAmount.setTotal(String.format("%.2f", amount));
-
         Refund refund = new Refund();
         refund.setAmount(refundAmount);
 
